@@ -32,3 +32,17 @@ Lets assume `|page|=n` then there can be at most `n-1` rules. Imagine `1, 2, 3, 
 For every page out of order, we apply the rules. If a rule fails, then we swap (fix) the page for that rule. We keep doing this until no more swaps remain which means the page is now in order.
 
 Swapping takes `O(1)`, so runtime stays `O(n^2)`.
+
+Day 6: Guard Gallivant
+----------------------
+### Part 1
+We represent the state of the guard by its row, column and current direction. We continue generating a next state until the guard is out of bounds.
+
+If the grid is of size `M x N`, in the worst case scenario, the guard will traverse all the grid points, giving `O(MN)`.
+
+### Part 2
+If the guard will be trapped in a loop, we should put an obstruction on the cells the guard will visit without an obstruction. We can find all those positions from part 1. We then try putting an obustrction for each position one at a time and check if the guard is trapped in a loop.
+
+To check for a loop, there should be one repeating state, i.e. same row, column and direction.
+
+Each simulation will take `O(MN)`, in the worst case scenario we have to try every possible cell, giving `O((MN)^2)`. If `M=N`, we have an `O(N^4)` which explains why it takes around 40 seconds to complete.
