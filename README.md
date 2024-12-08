@@ -107,3 +107,24 @@ T[i] = [
 
 Runtime stays the same as before.
 
+Day 8: Bridge Repair
+--------------------
+### Part 1
+We need to consider all pairs of antennas with the same frequency. Then for each pair we get two antinodes, one on each side. We can find the position of the antinodes using simple vectors and geometry. Since all pairs and antinodes must be on the same line, this means they follow a linear relation.
+
+For part 1 the antinodes must be a distance of 2 apart. If we have a pair `ab`, we can use this linear relation to find the antinode positions.
+
+```
+dir_ab = (rb - ra, cb - ca) # direction vector from a -> b
+# we now place an antinode using this direction vector and a distance of 2
+dr, dc = dir_ab
+antinode_position = (ra + distance * dr, ca + distance * dc) # where distance = 2
+```
+
+Collecting same frequencies requires traversing the entire grid once, takes `O(MN)`. In thw worst case scenario we end up with antennas on every cell, calculating the antinode positions is a constant time operation, so it takes `O(MN)`.
+
+### Part 2
+We drop the 2 distance away constraint. We basically put antinodes on both directions of the line connecting pairs `ab` as long as we stay within the grid. We have the direction vector from part 1, we now simply keep incrementing the distance. The maximum distance will never be larger than the `max(height, width)` of the grid.
+
+Runetime stays the same, `O(MN)`.
+
