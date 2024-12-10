@@ -121,10 +121,22 @@ dr, dc = dir_ab
 antinode_position = (ra + distance * dr, ca + distance * dc) # where distance = 2
 ```
 
-Collecting same frequencies requires traversing the entire grid once, takes `O(MN)`. In thw worst case scenario we end up with antennas on every cell, calculating the antinode positions is a constant time operation, so it takes `O(MN)`.
+Collecting same frequencies requires traversing the entire grid once, takes `O(MN)`. In the worst case scenario we end up with antennas on every cell, calculating the antinode positions is a constant time operation, so it takes `O(MN)`.
 
 ### Part 2
 We drop the 2 distance away constraint. We basically put antinodes on both directions of the line connecting pairs `ab` as long as we stay within the grid. We have the direction vector from part 1, we now simply keep incrementing the distance. The maximum distance will never be larger than the `max(height, width)` of the grid.
 
 Runetime stays the same, `O(MN)`.
 
+
+Day 9: Disk Fragmenter
+----------------------
+### Part 1
+Reprsent the dense layout as a string layout. Use two pointers, one pointing at the next free space, the other pointing at the beginning of a file. Then move file blocks one by one from right to left.
+
+Parsing the input takes `O(N)`. Using the two pointer approach, we are seeing each position at least once, and for some we do a constant number of work, we also need to calculate the checksum. Overall takes `O(N)`.
+
+### Part 2
+We are restricted to only move files if there is a space that fits the file size. I took a naive approach. Find all file blocks and for each file block search for a free space that fits the file. If there is a space then move the file. For each file this takes `O(N)` effort. If there are `N` files, it will be `O(N^2)`.
+
+A more efficient approach would have been representing the files and free spaces as ranges, and use arithmetics to move/find blocks around.s
