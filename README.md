@@ -153,3 +153,22 @@ BFS takes `O(N+M)`. Reading the input though takes `O(MN)`.
 We are now asked to find all distinct paths from a trailhead to a 9-height position. We can still use BFS with a few modifications. Now there can be multiple paths leading to a 9-height position. Previously we marked a 9-height position as seen as soon as we reached it. Everytime we pull a position from our queue to explore, if its a 9-height position then we have found a trail and increase the rating. A trail always ends in a 9-height position and there is nowhere to go from that position. Its the end. So, we just reset our seen array to allow starting a new trail.
 
 Runtime stays the same.
+
+
+Day 11: Plutonian Pebbles
+-------------------------
+### Part 1
+We are given a set of rules that determine what happens to each stone when we blink. We are asked to blink 25 times and count the final number of stones.
+
+The stones will behave independently from each other during each blink. We just apply the transformation rules to each stone and we generate a new list of stones after each blink. We do this 25 times and count the final number of stones.
+
+In the worst case scenario each stone will double. With 25 iterations, we will have `O(2^25)` effort. Naive counting will do fine.
+
+### Part 2
+We are now asked the same but with 75 iterations. Naive counting results in `O(2^75)`, so naive counting is not going to work. There must be a more efficient way of counting. Let's imagine on the `ith` iteration we know number `2` occurs `x` times. Then in the `(i+1)th` iteration number `2024` must appear `x` times. For each `2` we have we end up with a `2024`.
+
+Let's take another example, imagine on the `ith` iteration `2022` occurs `x` times. Then in the `(i+1)th` iteration each of the `2022` numbers will split in two, so we have `20` and `22` each occuring `x` times.
+
+In each blink we start a new counter. Then we apply the transformation rules to each stone and we know that transformation will occur as many times as the stone count in the current counter.
+
+With each iteration we only perform a constant amount of work. Because applying the transformation rules is `O(1)` and updating the counter is also `O(1)`. With `N` iteration total runtime is `O(N)`.
