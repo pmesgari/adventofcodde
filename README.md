@@ -139,4 +139,17 @@ Parsing the input takes `O(N)`. Using the two pointer approach, we are seeing ea
 ### Part 2
 We are restricted to only move files if there is a space that fits the file size. I took a naive approach. Find all file blocks and for each file block search for a free space that fits the file. If there is a space then move the file. For each file this takes `O(N)` effort. If there are `N` files, it will be `O(N^2)`.
 
-A more efficient approach would have been representing the files and free spaces as ranges, and use arithmetics to move/find blocks around.s
+A more efficient approach would have been representing the files and free spaces as ranges, and use arithmetics to move/find blocks around.
+
+
+Day 10: Hoof It
+---------------
+### Part 1
+We are asked to find from each 0-height position how many 9-height positions we can reach given every step we take must be gradual and even. We can treat this problem as a graph problem. Each position is mapped to a vertex and we add an edge `u -> v` if `height[v] - height[u] == 1`. We then use a BFS approach to explore the graph, and everytime we see a 9-height position we increment the score.
+
+BFS takes `O(N+M)`. Reading the input though takes `O(MN)`.
+
+### Part 2
+We are now asked to find all distinct paths from a trailhead to a 9-height position. We can still use BFS with a few modifications. Now there can be multiple paths leading to a 9-height position. Previously we marked a 9-height position as seen as soon as we reached it. Everytime we pull a position from our queue to explore, if its a 9-height position then we have found a trail and increase the rating. A trail always ends in a 9-height position and there is nowhere to go from that position. Its the end. So, we just reset our seen array to allow starting a new trail.
+
+Runtime stays the same.
