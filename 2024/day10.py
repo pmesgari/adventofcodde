@@ -32,39 +32,6 @@ def adj(row, col, grid: List[List[int]]):
     return neighbors
 
 
-# def calc_trailhead_score(row, col, grid: List[List[int]], rating=False):
-#     """Given a start position calculate the trailhead score"""
-#     to_explore = [(row, col)]
-#     score = 0
-#     seen = set((row, col))
-#     nines = defaultdict(int)
-#     while to_explore:
-#         r, c = to_explore.pop()
-#         neighbors = adj(r, c, grid)
-#         for neigbor in neighbors:
-#             rn, cn = neigbor
-#             if (rn, cn) in seen:
-#                 # if we are not rating we can't visit this again
-#                 if not rating:
-#                     continue
-#                 # otherwise we should only skip if its not a 9
-#                 if rating and grid[rn][cn] != 9:
-#                     continue
-#                 nines[(rn, cn)] += 1
-#             if grid[rn][cn] == ".":
-#                 seen.add(neigbor)
-#                 continue
-#             if grid[rn][cn] - grid[r][c] == 1:
-#                 if grid[rn][cn] == 9:
-#                     score += 1
-#                     if rating:
-#                         seen = set()
-#                         nines[(rn, cn)] += 1
-#                 to_explore.append((rn, cn))
-#                 seen.add(neigbor)
-#     print(row, col, nines)
-#     return score
-
 def calc_trailhead_score(row, col, grid: List[List[int]]):
     """Given a start position calculate the trailhead score"""
     to_explore = [(row, col)]

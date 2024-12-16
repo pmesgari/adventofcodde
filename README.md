@@ -172,3 +172,37 @@ Let's take another example, imagine on the `ith` iteration `2022` occurs `x` tim
 In each blink we start a new counter. Then we apply the transformation rules to each stone and we know that transformation will occur as many times as the stone count in the current counter.
 
 With each iteration we only perform a constant amount of work. Because applying the transformation rules is `O(1)` and updating the counter is also `O(1)`. With `N` iteration total runtime is `O(N)`.
+
+Day 12: Garden Groups
+---------------------
+### Part 1
+We are asked to determine each region and then calculate the total fencing price, i.e. `area x perimeter`. To determine each region we use a DFS approach. We begin at position `(0, 0)` and then explore all plots of the same type and then move onto next plot type. As we explore each plot, we mark them as seen to avoid going back there. This gives us the `area` of each plot. We now use the region we found and determine its perimeter. Each plot can contribute at most 4 to the perimeter. A perimeter is like a boundary and it exists when we go out of bounds or we have a plot of a different type as our neighbor. So for each plot in our region we look in all 4 directions and for each direction where one of the two conditions met we add 1 to our perimeter. Finally we calculate the total fencing price.
+
+Traversing the input grid takes `O(N x M)`. Running DFS takes `O(N + M)`. Calculating the area of each region is `O(1)` and finding all the perimeters in each region takes `O(N x M)`. Imagine a grid input where each plot is a different type, we then need to traverse each grid point one by one.
+
+### Part 2
+In part 2 we are asked to consider sides instead of perimeter. We again consider region by region. We use a similar idea to perimeter but call it a segment. Each plot can have at most 4 segments marked from 0 to 3.
+
+```
+   0
+  +-+
+3 |D| 1
+  +-+
+   2
+```
+
+A segment can have an edge and the definition of an edge is the same as a perimeter. Given a region, we first create a map of all the segments that act as an edge. We then pick a random point in the region that has an edge segment. We start walking along this edge segment in 90 and 270 degrees parallel to the edge direction for as long as we can. As we walk we cross out the segments we visit. For example when we have an edge in the up direction, we walk left and right. 
+
+```
+-- -- -- --
+<- <- ^ -> ->
+```
+
+We have to make sure we only walk along continious segments. As soon as we do not have an edge segment in our walk we will stop. We can see this situation in the second example. Let's say we are at first row and 2nd plot while seeing an edge in the downward direction. We then move left and right. If we move right without checking for segment continuity we are going to cross the 2nd `O` in the 2nd row and get to the 2nd `X` plot and there we will see there is an edge segment and cross it out, and that would be incorrect.
+
+```
+OvOOO
+OXOXO
+```
+
+Our runtime stays `O(N x M)` since in the worst case scenario we have a grid input where each cell is a different type and we will need to identify all its 4 edge segments.
