@@ -10,15 +10,81 @@ My solutions to advent of code challenges.
 
 Day 1 - Historian Hysteria
 --------------------------
+### Part 1
+We are asked to pair up numbers from two lists according to the rule that each pair corresponds to the minimum number in each list. We are then required to find the distance between each pair and sum it up.
+
+We simply sort each list and pair them up. Python sort function takes `O(NlogN)`. Pairing up takes `O(N)` and calculating the distance is `O(1)`. Total runtime is `O(NlogN)`.
+
+### Part 2
+We need to calculate a similarity score which depends on how frequent numbers in the first list appear. We simply go through the second list and count how often each number appears. Finally we calculate the similarity score by going through each number in the first list and multiplying it by the frequency it appears in the second list.
+
+Counting the frequency of of numbers in the second list takes `O(N)`. Calculating the similarity score requires to consider every number in first list, takes `O(N)`. Overall takes `O(N)`.
 
 Day 2: Red-Nosed Reports
 ------------------------
+### Part 1
+We have to determine if the levels in each report are safe or not. To be considered safe the numbers should be increasing or decreasing and every pair of adjacent numbers should differ by at least 1 and no more than 3. We simply consider each adjacent pair and check if they are all increasing or decreasing.
+
+```
+# all increasing
+a[i] < a[i+1] -> a[i+1] - a[i] > 0 in range(1, 4)
+
+# all decreasing
+a[i] > a[i+1] -> a[i] - a[i+1] > 0 in range(1, 4)
+```
+
+With `N` reports and `M` levels in each report, it takes `O(NM)` to determine safety for all reports.
+
+### Part 2
+We now need to consider a damping effect. That is a single bad level is allowed. To do this we consider all combinations of the levels by skipping exactly one item.
+
+For a report with `M` levels, we need to iterate `M` times to consider all cases where 1 element is missing. This makes our runtime to be `O(NM^2)`.
 
 Day 3: Mull It Over
 -------------------
+### Part 1
+We are given a long string that contains instructions to multiply two numbers. We simply use regex to find all matching instances and then sum up their multiplications.
+
+Since we have a simple regex, if there are `K` matches and `M` is the average length of a match then it takes `O(KM)` to find the matches. But, we also need to traverse the whole input string. So overall runtime is `O(N + KM)`.
+
+### Part 2
+We now skip or do a multiplication depending on the appearence of `do()` and `don't()` prefixes. We find all the appearences of `do()`, `dont't()` and `mul(X,Y)` and then process them one by one. Since a `do()` or `don't()` enables or disables future multiplications we use a flag to keep track of whether we need to multiply or not.
+
+Runtime stays the same `O(N + KM)`, we are just performing more matches.
 
 Day 4: Ceres Search
 -------------------
+### Part 1
+We need to find all `XMAS` words which can appear in any direction as well as reversed. We iterate over the grid and everytime we notice an `X` we check in all eight directions if it forms `XMAS`.
+
+Traversing the grid takes `O(NM)` and checking in all eight directions takes `O(1)` because `XMAS` has a costant length.
+
+### Part 2
+We now need to find a more difficult pattern of cross `XMAS`. We can have a cross in one of these four combinations:
+
+```
+    M   S
+      A
+    M   S
+
+    M   M
+      A
+    S   S
+
+    S   M
+      A
+    S   M
+
+    S   S
+      A
+    M   M
+```
+
+To find these we consider a smaller moving 3x3 grid and then check if any of these combinations occur.
+
+Runtime is similar i.e. `O(NM)`, creating the smaller 3x3 grid takes constant effort.
+
+*NOTE: I looked for `MAS` and `SAM` patterns when checking the cross situations. However, there is a better and simpler way which looks at the `A` character and checks the other characters on its 4 corner.*
 
 Day 5: Print Queue
 ------------------
