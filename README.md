@@ -206,3 +206,29 @@ OXOXO
 ```
 
 Our runtime stays `O(N x M)` since in the worst case scenario we have a grid input where each cell is a different type and we will need to identify all its 4 edge segments.
+
+Day 13: Claw Contraption
+------------------------
+### Part 1
+We are asked to calculate the fewest number of tokens to reach the prize location by pushing the A and B buttons. Each button can be pushed at most 100 times. In this part we can simply use brute force. Press the A button once, see how far are we from target and check if we can get to target by prressing the B button an integer number of times. For every combination that gets us to target we calculate the tokens needed. We keep doing this until we have pushed A 100 times.
+
+In each iteration we do `O(1)` work because we are just doing arithmetic calculations. We also have the 100 time restriction so our iteration are also limited. Makes the overall runtime `O(1)`.
+
+### Part 2
+In part 2 our prize location has moved by `10000000000000` units in both X and Y directions. Instead of the naive solution we can simply treat the problem as solving two linear equations in two variables.
+
+```
+xt = ca * xa + cb * xb
+yt = ca * ya + cb * yb
+```
+
+These equations describe two lines. They are either parallel, the same or intersect and if they intersect they can only intersect in a single point. Doing a bit of algebra we can solve for `ca` and `cb` like so:
+
+```
+ca = (xt * yb - xb * yt) / (xa * yb - xb * ya)
+cb = (xt * ya - xa * yt) / (xb * ya - xa * yb)
+```
+
+If both `ca` and `cb` are `>= 0` and are integer values we have an intersection.
+
+It takes `O(1)` because again we are just doing arithmetic calculations.
