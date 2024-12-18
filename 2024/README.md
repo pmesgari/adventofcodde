@@ -290,3 +290,26 @@ cb = (xt * ya - xa * yt) / (xb * ya - xa * yb)
 If both `ca` and `cb` are `>= 0` and are integer values we have an intersection.
 
 It takes `O(1)` because again we are just doing arithmetic calculations.
+
+Day 14: Restroom Redoubt
+------------------------
+### Part 1
+We have several robots that move in straight lines and they can share the same position. We are asked to simulate the movement of the robots after 100 steps and then split the grid in 4 quadrants, count the robots in each quadrant and multiply the counts.
+
+Robots can teleport, that is wrap around when they go out of bound. We are given the start position, velocity vector and we know the time so we can simply calculate the final position of each robot:
+
+```
+x2 = (x1 + vx * time) % width
+y2 = (y1 + vy * time) % height
+```
+
+We use a counter that maps `position -> number of robots` and move all the robots. Finally we split the grid in 4 quadrants and count the number of robots in each and return their product.
+
+When moving We are only perfoming `O(1)` arithmetics so runtime is bound by number of robots, thus `O(N)`. When calculating the product of quadrant counts we might have one robot per tile, giving a total runtime of `O(NM)` if `N=width` and `M=height`.
+
+### Part 2
+I found the question vague, and had to get some help from the web. At the end it was easier than I thought. We are looking for the timestamp in which a Christmas tree emerges. When that happens we are also told most of the robots arrange themselves into a Christmas tree. So, there will be a region in the grid where robots density is high.
+
+We keep increasing the time steps and move the robots then calculate their density. We calculate the center of the robot's x and y positions by taking the mean of their x and y coordinates. Then we calculate the mean total distance of all robot positions from the center. We find the distance by simply using Manhattan distance. The time step at which we have the smallest mean total distance from center is probably a good sign that we have a Christmas tree as most robots will arrange themselves into that shape. It turned out this is indeed the case.
+
+Runtime for moving robots and calculating is `O(N)` and now we might need a minimum of `K` time steps to arrange the robots in a Christmas tree, making the final runtime to be `O(KN)`.
