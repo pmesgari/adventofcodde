@@ -313,3 +313,17 @@ I found the question vague, and had to get some help from the web. At the end it
 We keep increasing the time steps and move the robots then calculate their density. We calculate the center of the robot's x and y positions by taking the mean of their x and y coordinates. Then we calculate the mean total distance of all robot positions from the center. We find the distance by simply using Manhattan distance. The time step at which we have the smallest mean total distance from center is probably a good sign that we have a Christmas tree as most robots will arrange themselves into that shape. It turned out this is indeed the case.
 
 Runtime for moving robots and calculating is `O(N)` and now we might need a minimum of `K` time steps to arrange the robots in a Christmas tree, making the final runtime to be `O(KN)`.
+
+Day 15: Warehouse Woes
+----------------------
+### Part 1
+We have a robot which moves in a grid and possibly shifts boxes around. Everytime we detect a box ahead of our robot movement direction we perform a sweep to find all connected boxes. Then we determine the new positions of all the boxes and if none of the new positions coincides with a wall, then we move all the boxes and the robot to their new positions.
+
+We have `M` moves to process. In the worse cast all boxes in the grid may be connected, so we will have to traverse the entire grid, that makes `O(MxRxC)` with `R` the number of rows and `C` the number of columns.
+
+### Part 2
+In part 2 everything doubles. This means our robot will face either the left `[` or the right `]` side of a box and that boxes could be connected with each other. So, we need to identify when facing half a box what are all the boxes that needs to move. Everytime we have a half box in front, we find its other half and that gives us a complete box. But, each half of our box could have another half box on top/below it. So, we check if each half of our complete box has another halft connected to it, if so we will add that half to our queue for processing.
+
+The key point here is to understand connected boxes will move all together as a blob. Once we detect the entire blob, all we need to check is if any of the boxes in this blob coincide with a wall, if not we can move all of them at once.
+
+Our runtime stays similar, the doubling effect is just a constant factor.
