@@ -327,3 +327,17 @@ In part 2 everything doubles. This means our robot will face either the left `[`
 The key point here is to understand connected boxes will move all together as a blob. Once we detect the entire blob, all we need to check is if any of the boxes in this blob coincide with a wall, if not we can move all of them at once.
 
 Our runtime stays similar, the doubling effect is just a constant factor.
+
+Day 16: Reindeer Maze
+---------------------
+### Part 1
+We have a maze with a start and end positions. In each iteration we either move in the current heading or rotate 90 degree clockwise or counter clockwise. Moving in the current heading costs 1 unit and rotating cost 1000. We can use A-star algorithm to find the lowest cost from start to end.
+
+I couldn't find a proper way to formulate the runtime. Reading some literature points to a worst case runtime of `O(b^d)` and depending on the quality of the heuristic function this can be improved.
+
+### Part 2
+We now need to find all the lowest cost paths that leads start to finish and then find the total number of positions that are part of any lowest cost path.
+
+To do this I omitted the heuristic function and then began to expand the states and the path. I continue with a path as long as its cost does not exceed the lowest best cost and the path reaches the end. Then I keep track of all the paths I found and finally return the length of their unions. I kept track of each state by using a tuple of `(current_cost, head, path)`. I then try to expand the head and check if the path is worth to continue. If yes, then I generate a new state and keep going further.
+
+Similar to part 1, I couldn't easily formulate the runtime of this problem.
