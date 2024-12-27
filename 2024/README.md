@@ -341,3 +341,177 @@ We now need to find all the lowest cost paths that leads start to finish and the
 To do this I omitted the heuristic function and then began to expand the states and the path. I continue with a path as long as its cost does not exceed the lowest best cost and the path reaches the end. Then I keep track of all the paths I found and finally return the length of their unions. I kept track of each state by using a tuple of `(current_cost, head, path)`. I then try to expand the head and check if the path is worth to continue. If yes, then I generate a new state and keep going further.
 
 Similar to part 1, I couldn't easily formulate the runtime of this problem.
+
+Day 17: Chronospatial Computer
+------------------------------
+*TODO*
+
+Day 18: Day 18: RAM Run
+-----------------------
+### Part 1
+We are given a search problem. We simulate the falling bytes and create the corresponding grid and then run BFS to find a path from start to end. Once we have a path, we will use backtracking to find the total length of the path.
+
+Running BFS takes `O(N+M)` and the backtrack can take at most `O(N)` where `N = number of vertices` and `M = number of edges`. Overall runtime is `O(N+M)`.
+
+### Part 2
+We have to find the first byte which blocks the path from start to finish. This is a good place to use binary search. We are looking for the minimum number of bytes to block the path. We start our binary search with `left = 0` and `right = len(bytes)` and in each iteration use our solution from part 1 to detect if there is still a path or not. When binary search finishes, the left index will be the minimum number of bytes needed to block the path.
+
+We run BFS at most `O(logB)` times with `B` the total number of falling bytes. In worst case scenario we need every cell in the grid to be blocked so `B = N`. This makes a total runtime of `O(N+m) * O(logN) = O(logN * (N + M))`.
+
+Day 19: Linen Layout
+--------------------
+### Part 1
+We are given some patterns and need to determine if we can make the needed designs. We use a recursive approach. We start with the initial design and everytime there is a pattern matching the beginning of the design we make a recursive call to see if we can make the reamining part of the design. If at any point we have an empty design it means we have created the design with the available patterns. We keep a count of the total number of times we reached an empty design. Finally we sum all instances where `total > 0`.
+
+We need to use a cache as the number of possibilities will be exponential.
+
+### Part 2
+We use the same solution as part 1 but instead of summing all instances where `total > 0`, we simply sum all the returned totals.
+
+Day 20: Race Condition
+----------------------
+### Part 1
+We are given two points and asked to find the shortest path with the twist that we can cheat once. A cheat allows us to ignore a wall cell and go through it. We can use Dijkstra algorithm to find the shortest path from start to every other node. Then we will simulate what would happen if along this shortest path we would go through a wall.
+
+Imagine the following cheat, we are at position `X` and decide to go through the wall. We call position `X` as `p1` and the dot we arrive at as `p3`.  We are also given a critical piece of information, *there is a single path from start to end*. This means after Dijkstra has finished, we only have the distances for the points that are along the path from start to finish.
+
+```
+..X#.
+```
+
+If we split our paths in parts **without** cheating and while going through `p1`, we will have:
+
+```
+distance S -> p1 + distance p1 -> E
+```
+
+Now, by cheating we will have:
+
+```
+distance S -> p1 + distance p1 -> p3 + distance p3 -> E
+```
+
+If we want to save at least 100 seconds then we have to find the pairs `(p1, p3)` where `distance S -> p1 - distance S -> p3 >= 102`. This formula is telling how many cells we save if we were to go through a wall from `p1` and end up on `p3`. Going through the wall itself will take 2 steps, that's why we have 102 as the lower limit.
+
+We can find the pairs `(p1, p3)` by checking all the points along the path that have a wall as their neighbors. For all those points we then use our formula to calculate the time savings and if its at least `>= 102` we increment our count.
+
+Dijkstra takes `O(M + NlogN)`, finding the pairs takes at most `O(N)`, overall we have `O(M + NlogN)`.
+
+### Part 2
+In part 2 we are allowed an extended cheat, up to 20 cells. We can use the same approach, we just have more pairs that could save us time. Considering we are at position `X` our cheat cells would follow one of these patterns with up to 20 cells.
+
+```
+---X---- # horizontal
+
+  |      # vertical
+  |
+  X
+  |
+  |
+           
+      |  # L-Shaped
+      |
+---X--|   ---X--|
+                |
+                |
+```
+
+For each of these patterns, and for each pair within such pattern we again calculate our time savings and increment our count. To find the time savings we will now use the Manhttan distance.
+
+Runtime for Dijkstra stays the same, but we now have way more pairs to consider. For each point along our path, we consider all cheat pairs, `O(N * C^2)` where `C` is the cheat length. Overall runtime would be `O(M + NlogN) + O(NC^2)`.
+
+Day 21: Keypad Conundrum
+------------------------
+### Part 1
+We have multiple robots and keypads which we need to manouver. The numerical keypad is the one we will need to insert the code on. There are two other directional keypads that eventually control the numerical keypad. Its easier to use a level view of the keypads.
+
+```
+Level 1
+    +---+---+
+    | ^ | A |
++---+---+---+
+| < | v | > |
++---+---+---+
+
+Level 2
+    +---+---+
+    | ^ | A |
++---+---+---+
+| < | v | > |
++---+---+---+
+
+Level 3
++---+---+---+
+| 7 | 8 | 9 |
++---+---+---+
+| 4 | 5 | 6 |
++---+---+---+
+| 1 | 2 | 3 |
++---+---+---+
+    | 0 | A |
+    +---+---+
+
+```
+
+Lets say we want to press the `0` button on the numeric keypad. This is what needs to happen:
+
+```
+On level 3, move from A to 0 and press 0, giving us the path = <A
+  to move <
+    On level 2, move from A to < and press <, giving us the path = v<<A
+      to move v
+        On level 1, move from A to v and press v, giving us the path = <vA # pressing A here pushes down v key on level 1 which triggers the robot on level 2 to move v
+      to move <
+        On level 1, move from v to < and press <, giving us the path = <A 
+      to move <
+        On level 1, move from < to < and press <, giving us the path = A # we are already on < so no move is required
+      to press A
+        On level 1, move from < to A, giving us the path = >>^A # pressing A here, pushes down A on level 2 which finally moves the robot arm on level 1 to move 3
+  the total path to move < is <vA<AA>>^A on level 1
+  to press A
+    On level 2, move from < to A and press A, giving us the path = >>^A
+      to move >
+        On level 1, move from A to v and press v, giving us the path = vA
+      to move >
+        On level 1, move from A to A and press A, giving us the path = A
+      to move ^
+        On level 1, move from > to ^ and press ^, giving us the path = <^A
+      to press A
+        On level 1, move from ^ to A and press A, giving us the path = >A
+  the total path to press A is vAA<^A>A
+
+The entire path to move from A to 0 and press A is <vA<AA>>^AvAA<^A>A
+  ```
+
+Some key observations are:
+- On every keypad we move to a target key and press it. This measn we start at key `A` and end on key `A` on that keypad.
+- When moving to target key on level 1 and pressing `A`, we cause the robot arm on level 2 to move or to press 'A' but we stay on target key on level 1.
+
+We begin with finding all the shortest path for each pair of keys on each keypad. We are essentially building a giant cache of all the possibilities. Our cache tells us to get from key A to key B on level X and it will take a minimum of N steps. We then run each code through our cache to find sum up all the sequences needed on level 1.
+
+Building the cache takes `O(LN^2)` assuming each side of the largest keypad is `N` and having `L` levels.
+
+### Part 2
+We have more levels, this means we need a to build a bigger cache by including more levels. Runtime stays the same.
+
+Day 22: Monkey Market
+---------------------
+*TODO*
+
+Day 23: LAN Party
+-----------------
+### Part 1
+We are asked to find sets of 3 computers that are connected to each other. We can treat this as a graph problem. We parse our input data into an adjacency list and then traverse this list to find all 3 vertices that are connected to each other. A nice trick here is to sort the 3 vertices and use a set to avoid over counting, because order does not matter.
+
+It takes `O(NM)` to build the adjaceny list and traversing it also takes `O(NM)`.
+
+### Part 2
+We need to find the largest set of computers that are all connected to each other. This is the same as finding the largest clique in a graph which is an NP-complete problem. I used the `networkx` library to find the largest clique and it was quite neat.
+
+Day 24: Crossed Wires
+---------------------
+*TODO*
+
+Day 25: Code Chronicle
+----------------------
+The last puzzle, we need to match keys with locks. We parse each key and lock block and then we count the number of `#` in each column. A key will match a lock iff there are no overlapping `#` cells. This requires the sum of `#` in each column of a given key and a lock should be `<= 5` since we have at most 5 rows.
