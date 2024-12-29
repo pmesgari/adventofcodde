@@ -1,6 +1,34 @@
 # Advent of Code 2024 Solutions
 
-Day 1 - Historian Hysteria
+Table of Contents
+-----------------
+- [Day 1 - Historian Hysteria][d01]
+- [Day 2: Red-Nosed Reports][d02]
+- [Day 3: Mull It Over][d03]
+- [Day 4: Ceres Search][d04]
+- [Day 5: Print Queue][d05]
+- [Day 6: Guard Gallivant][d06]
+- [Day 7: Bridge Repair][d07]
+- [Day 8: Bridge Repair][d08]
+- [Day 9: Disk Fragmenter][d09]
+- [Day 10: Hoof It][d10]
+- [Day 11: Plutonian Pebbles][d11]
+- [Day 12: Garden Groups][d12]
+- [Day 13: Claw Contraption][d13]
+- [Day 14: Restroom Redoubt][d14]
+- [Day 15: Warehouse Woes][d15]
+- [Day 16: Reindeer Maze][d16]
+- [Day 17: Chronospatial Computer][d17]
+- [Day 18: Day 18: RAM Run][d18]
+- [Day 19: Linen Layout][d19]
+- [Day 20: Race Condition][d20]
+- [Day 21: Keypad Conundrum][d21]
+- [Day 22: Monkey Market][d22]
+- [Day 23: LAN Party][d23]
+- [Day 24: Crossed Wires][d24]
+- [Day 25: Code Chronicle][d25]
+
+Day 1 - Historian Hysteria 
 --------------------------
 ### Part 1
 We are asked to pair up numbers from two lists according to the rule that each pair corresponds to the minimum number in each list. We are then required to find the distance between each pair and sum it up.
@@ -540,3 +568,32 @@ Evaluating each gate could make `N` other recursive calls to find all its depend
 Day 25: Code Chronicle
 ----------------------
 The last puzzle, we need to match keys with locks. We parse each key and lock block and then we count the number of `#` in each column. A key will match a lock iff there are no overlapping `#` cells. This requires the sum of `#` in each column of a given key and a lock should be `<= 5` since we have at most 5 rows.
+
+
+[top]: #advent-of-code-2024-solutions
+[d01]: #day-1---historian-hysteria
+[d02]: #day-2-red-nosed-reports
+[d03]: #day-3-mull-it-over
+[d04]: #day-4-ceres-search
+[d05]: #day-5-print-queue
+[d06]: #day-6-guard-gallivant
+[d07]: #day-7-bridge-repair
+[d08]: #day-8-bridge-repair
+[d09]: #day-9-disk-fragmenter
+[d10]: #day-10-hoof-it
+[d11]: #day-11-plutonian-pebbles
+[d12]: #day-12-garden-groups
+[d13]: #day-13-claw-contraption
+[d14]: #day-14-restroom-redoubt
+[d15]: #day-15-warehouse-woes
+[d16]: #day-16-reindeer-maze
+[d17]: #day-17-chronospatial-computer
+[d18]: #day-18-day-18-ram-run
+[d19]: #day-19-linen-layout
+[d20]: #day-20-race-condition
+[d21]: #day-21-keypad-conundrum
+[d22]: #day-22-monkey-market
+[d23]: #day-23-lan-party
+[d24]: #day-24-crossed-wires
+[d25]: #day-25-code-chronicle
+
