@@ -344,7 +344,16 @@ Similar to part 1, I couldn't easily formulate the runtime of this problem.
 
 Day 17: Chronospatial Computer
 ------------------------------
-*TODO*
+### Part 1
+We are asked to run a program using the opcodes and operands in the input. I just implemented each opcode and simply executed the program.
+
+Each opcode takes `O(1)` so runtime is `O(N)` with `N` being the number of opcodes.
+
+### Part 2
+I struggled with understanding part 2, had to look at hints and solutions on the web. Eventually I understood all that matters are the 3 least significant bits of register `A` as they determine the output if read from the end. To find `A` I tried finding a set of candidates that generate the last number in my program and then for each of these candidates try to propagate further to generate the remaining numbers.
+
+Assuming there can be `M` candidates we run the program for each candidate once, thus giving a total runtime `O(MN)`
+
 
 Day 18: Day 18: RAM Run
 -----------------------
@@ -496,7 +505,17 @@ We have more levels, this means we need a to build a bigger cache by including m
 
 Day 22: Monkey Market
 ---------------------
-*TODO*
+### Part 1
+We need to calculate the 2000th element of a sequence. We just follow the sequence generation rules to generate the 2000th element for each initial secret and then sum those up.
+
+The generation rules take `O(1)`. So, total runtime is `O(N)` with `N` being the total number of initial secrets.
+
+### Part 2
+We are now asked to find the optimal sequence of price changes that give us the most bananas. We can use a `deque` of maximum length 4 to implement a fixed sliding window of size 4. We then record each 4 tuple of price deltas and the bananas we get, which is the ones digit of the 4th element in our current sliding window.
+
+We get the price deltas for each initial secret and then use a `Counter` to sum up all the bananas across all the monkeys for each price delta. The final answer is the max value in the counter.
+
+If we were to brute force this part, our deltas could range from -9 to +9 so we have 19 numbers. We then need to consider a 4-tuple of deltas, giving `19^4` possibilities. Doing this for each monkey (1685) and for each secret number (total 2000) would come around 400 billion. By using a sliding window approach we sweep through the 2000 secrets once, and then summing up over the counter is another final sweep. So, runtime stays linear `O(N)`.
 
 Day 23: LAN Party
 -----------------
@@ -510,6 +529,12 @@ We need to find the largest set of computers that are all connected to each othe
 
 Day 24: Crossed Wires
 ---------------------
+### Part 1
+We have a list of logic gates to evaluate. Each gate could have one or more dependencies on other gates. We are only interested in finding the output to `z` gates. We use a recursive approach where we look for the signal value of our gate in the provided signals, if there is a value we are fine, otherwise we recursively find the other gates that define the value for our signal. We keep doing this until we have a gate that all its signals are available in our signals list. I also implemented a signal cache to avoid recalculating signal values.
+
+Evaluating each gate could make `N` other recursive calls to find all its dependencies. With `N` gates we will have `O(N^2)` runtime.
+
+### Part 2
 *TODO*
 
 Day 25: Code Chronicle
