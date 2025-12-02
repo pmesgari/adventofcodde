@@ -3,31 +3,49 @@ with open(0, encoding='utf-8') as f:
     ranges = [list(map(int, item.split('-'))) for item in line if item]
 
 
-def chunk(s, n):
-    return [s[i:i+n] for i in range(0, len(s), n)]
+max_val = 0
+for r1, r2 in ranges:
+    if r1 > max_val:
+        max_val = r1
+    if r2 > max_val:
+        max_val = r2
 
-invalid_ids = 0
-for start, end in ranges:
-    # print(start, end)
-    while start <= end:
-        mid = len(str(start)) // 2
-        if str(start)[:mid] == str(start)[mid:]:
-            invalid_ids += start
-            # print('\t' + str(start))
-        start += 1
+max_length = len(str(max_val))
 
-# print(invalid_ids)
+def generate_ids(seed, max_val):
+    ids = []
+    s_seed = str(seed)
+    
+    current_s = s_seed * 2
+    
+    while int(current_s) <= max_val:
+        ids.append(int(current_s))
+        current_s += s_seed
+        
+    return ids
 
-total = 0
-seen = set()
-for start, end in ranges:
-    while start <= end:
-        for n in range(1, len(str(start)) // 2 + 1):
-            chunks = chunk(str(start), n)
-            if all(c == chunks[0] for c in chunks) and start not in seen:
-                total += start
-                seen.add(start)
-                # print(start, chunks)
-        start += 1
 
-print(total)
+def is_composed(seed):
+    s_seed = str(seed)
+    n = len(s_seed)
+    for l in range(1, n // 2 + 1):
+        if n % l == 0 and s_seed[:l] * (n // l) == s_seed:
+            return True
+    
+    return False
+
+
+def find_fake_ids(ranges):
+    total = 0
+    for i in range(1, 10 ** (max_length // 2)):
+        if is_composed(i):
+            continue
+        ids = generate_ids(i, max_val)
+        for next_id in ids:
+            for r1, r2 in ranges:
+                if next_id >= r1 and next_id <= r2:
+                    total += next_id
+    return total
+
+
+print(find_fake_ids(ranges))

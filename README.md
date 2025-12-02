@@ -10,5 +10,7 @@ My solutions to advent of code challenges.
 # Solutions
 
 - [AoC 2024][2024]
+- [AoC 2025][2025]
 
 [2024]: 2024/README.md
+[2025]: 2025/README.md
