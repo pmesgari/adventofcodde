@@ -18,7 +18,7 @@ def run_solution(year, day, test=False):
         stderr=subprocess.STDOUT,
         text=True,
     )
-    print(result.stdout.strip())
+    print(result.stdout, end='')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run Advent of Code solution.")

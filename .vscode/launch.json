@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "solve.py",
             "console": "integratedTerminal",
-            "args": ["2024", "4", "--test"]
+            "args": ["2024", "24"]
         }
     ]
 }

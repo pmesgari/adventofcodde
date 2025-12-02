@@ -1,60 +1,98 @@
 """--- Day 24: Crossed Wires ---"""
 
-with open(0) as f:
-    signal_data = {}
 
+def normalize(x, op, y):
+    return min(x, y), op, max(x, y)
+
+
+with open(0) as f:
+    device_data = {}
+    output_data = {}
     for line in f:
         if line == "\n":
             break
         signal, val = line.strip().split(": ")
-        signal_data[signal] = int(val)
+        device_data[signal] = int(val)
 
-    output_data = {}
-    gate_data = {}
     for line in f:
         left, right = line.strip().split(" -> ")
         inp1sig, gate_type, inp2sig = left.split(" ")
-        gate_data[(inp1sig, inp2sig, gate_type, right)] = right
-        output_data[right] = (inp1sig, inp2sig, gate_type, right)
+        device_data[right] = normalize(inp1sig, gate_type, inp2sig)
+        output_data[normalize(inp1sig, gate_type, inp2sig)] = right
 
 
-def simulate(signals, gates, outputs):
-    signal_cache = {}
-
-    def _evaluate(inp1sig, inp2sig, gate_type):
-        if gate_type == "AND":
-            return inp1sig and inp2sig
-        if gate_type == "OR":
-            return inp1sig or inp2sig
-        if gate_type == "XOR":
-            return inp1sig ^ inp2sig
-
-    def _simulate(gate):
-        inp1sig, inp2sig, gate_type, _ = gate
-        if inp1sig in signals and inp2sig in signals:
-            return _evaluate(signals[inp1sig], signals[inp2sig], gate_type)
-        else:
-            inp1sigval = signal_cache.get(inp1sig, None)
-            inp2sigval = signal_cache.get(inp2sig, None)
-            if inp1sigval is None:
-                inp1sigval = _simulate(outputs[inp1sig])
-                signal_cache[inp1sig] = inp1sigval
-            if inp2sigval is None:
-                inp2sigval = _simulate(outputs[inp2sig])
-                signal_cache[inp2sig] = inp2sigval
-            return _evaluate(inp1sigval, inp2sigval, gate_type)
-
-    out = []
-    for gate, output in gates.items():
-        if output.startswith("z"):
-            out.append((output, _simulate(gate)))
-
-    return sorted(out, key=lambda x: x[0], reverse=True)
+def evaluate(sig1, gate_type, sig2):
+    if gate_type == "AND":
+        return sig1 and sig2
+    if gate_type == "OR":
+        return sig1 or sig2
+    if gate_type == "XOR":
+        return sig1 ^ sig2
 
 
-print(
-    int(
-        "".join([str(out[1]) for out in simulate(signal_data, gate_data, output_data)]),
-        2,
-    )
-)
+def simulate(gate, device):
+    sig1, gate_type, sig2 = gate
+    if device[sig1] in [0, 1] and device[sig2] in [0, 1]:
+        return evaluate(device[sig1], gate_type, device[sig2])
+    else:
+        sig1val = simulate(device[sig1], device)
+        sig2val = simulate(device[sig2], device)
+        return evaluate(sig1val, gate_type, sig2val)
+
+
+def compute_z(device):
+    zgates = {}
+    zoutputs = {}
+    for wire, out in device.items():
+        if out not in [0, 1] and wire.startswith("z"):
+            zgates[wire] = out
+            zoutputs[out] = wire
+
+    output = []
+    for zsig in sorted(zoutputs.values(), reverse=True):
+        output.append(str(simulate(zgates[zsig], device)))
+
+    return "".join(output)
+
+
+print(int(compute_z(device_data), 2))
+
+for i in range(45):
+    z = f'z{i:02d}'
+    g = (f'x{i:02d}', f'y{i:02d}', f'z{i:02d}')
+    x, op, y = device_data[z]
+    if op != 'XOR':
+        print(z, device_data[z])
+
+def find_next_swap(device):
+    num1 = int("".join([str(device[f"x{i:02d}"]) for i in reversed(range(45))]), 2)
+    num2 = int("".join([str(device[f"y{i:02d}"]) for i in reversed(range(45))]), 2)
+    res = "".join(compute_z(device))
+    expected = num1 + num2
+
+    print(f"x: {num1: b}")
+    print(f"y: {num2: b}")
+    print(f"z: {res}")
+    print("e: " + f"{expected:b}")
+
+    e = f"{expected:b}"
+    for i in reversed(range(45)):
+        if res[i] != e[i]:
+            print(f"wrong bit {len(e) - i - 1}, expected {e[i]} got {res[i]}")
+            break
+
+
+def swap(a, b, device):
+    device_copy = {k: v for k, v in device.items()}
+    device_copy[a], device_copy[b] = device_copy[b], device_copy[a]
+    return device_copy
+
+
+
+find_next_swap(device_data)
+e19 = ("x19", "XOR", "y19")
+print(output_data.get(e19))
+d1 = swap("nmn", "z19", device_data)
+
+#find_next_swap(d1)
+
