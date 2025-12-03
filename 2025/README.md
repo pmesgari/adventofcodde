@@ -63,6 +63,70 @@ We can optimize this approach with two modifications:
 With these optimizations runtime was 0.20 seconds.
 
 
+Day 3: Lobby
+----------------------
+# Part 1
+We are asked to find the largest pair of indices in order. Iterating down from 9 to 1 for the first position I then searched for the largest value for the second position. Runtime is `O(N^2)`.
+
+# Part 2
+Now we need to find 12 batteries, and my approach from part 1 was doomed. It would require `O(N^12)` with 12 nested loops.
+
+Instead, I restricted the range I could pick each digit and looked for the maximum value in that range. For example:
+
+```
+8  1  1  1  1  1  1  1  1  1  1  1  1  1  9
+0  1  2  3  4  5  6  7  8  9  10 11 12 13 14
+
+p: the digit being picked, 1st digit, 2nd digit etc.
+
+p   remaining
+0   11
+1   10
+2   9
+3   8
+...
+```
+
+This means for the first digit I can only look at a range 0..3 because picking the first digit at index 4 would mean there is not enough left to pick the remaining 11 digits.
+
+At the start we can pick the first digit from any of the O positions.
+As I pick digits, I get closer to the end. It looks like this:
+
+```
+OOOO-----------
+```
+
+Picking the 1st digit:
+
+```
+OxOO-----------
+```
+
+Now, I need to pick 11 more digits and I can only start after the 1st digit, so index 2:
+
+```
+--OOOO---------
+```
+
+I pick the 3rd idx:
+
+```
+--OxOO---------
+```
+
+The same procedure repeats for the 4th digits and so on. I always need to cut off the remaining digits that I need from the length to ensure I don't run out of digits to pick:
+
+```
+remaining = n - p -1 # -1 for the 0 index
+end = len(line) - remaining
+
+```
+
+
+
+
+
+
 [top]: #advent-of-code-2025-solutions
 [d01]: #day-1-secret-entrance
 [d02]: #day-2-gift-shop

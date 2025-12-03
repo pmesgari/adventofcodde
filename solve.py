@@ -12,7 +12,7 @@ def run_solution(year, day, test=False):
 
     # Run the solution with input redirection
     result = subprocess.run(
-        ["python", solution_file],
+        ["python3", solution_file],
         stdin=open(input_file, "r"),
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
