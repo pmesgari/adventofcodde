@@ -4,6 +4,9 @@ Table of Contents
 -----------------
 - [Day 1 - Secret Entrance][d01]
 - [Day 2 - Gift Shop][d02]
+- [Day 3 - Lobby][d03]
+- [Day 4 - Printing Department][d04]
+- [Day 5 - Cafeteria][d05]
 
 
 Day 1: Secret Entrance
@@ -123,10 +126,34 @@ end = len(line) - remaining
 ```
 
 
+Day 4: Printing Department
+--------------------------
+# Part 1
+We are asked to find all the rolls we can remove. A roll can be removed if there are less than four rolls in its neighborhood. Iterate the grid, for every roll position check all adjacent neighbors, if count is less than 4 include it for removal. Runtime is `O(NM)`.
+
+# Part 2
+We now need to remove as many rolls as possible. My first implementation used the solution from part 1 and executed it in a while loop until there was nothing to remove anymore. It worked but was a bit slow because runtime was `O(NMK)`.
+
+Instead of visiting every cell with every iteration I did one initial count of all the rolls then I picked a spot and decremented all its roll neighbors in the count by 1. If any neighbor ended up with a count less than 4 I added it to the queue. This means I only have items in the queue that are going to be removed and while I process these items I update all their neighbors. This has better performance because runtime is `O(NM)`, as I need to process each position at most once.
 
 
+Day 5: Cafeteria
+----------------
+# Part 1
+We are asked to find fresh ingredients by comparing their ids to the ranges. I iterated the ids and checked if it falls within any region. Runtime is `O(N)` because the checks are all arithmetic operations and I iterate the list of IDs once.
+
+# Part 2
+We are now required to find all the fresh ingredients by ignoring the list of the ids and just use the ranges. We can do this by first sorting the ranges using their start point. This aligns all the ranges from their left side. We then pick the first range and call it our current range, there are two cases:
+
+1) The current range will overlap with the next range in which case we can merge these two
+2) The current range is disjoint with the next one. This means it is also disjoint with any other range, because the list is sorted.
+
+This way we merge as many ranges together as possible and then simple arithmetic gives us the count. Runtime is `O(N)` because we iterate the ranges once.
 
 
 [top]: #advent-of-code-2025-solutions
 [d01]: #day-1-secret-entrance
 [d02]: #day-2-gift-shop
+[d03]: #day-3-lobby
+[d04]: #day-4-printing-department
+[d05]: #day-5-cafeteria
