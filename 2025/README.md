@@ -7,6 +7,7 @@ Table of Contents
 - [Day 3 - Lobby][d03]
 - [Day 4 - Printing Department][d04]
 - [Day 5 - Cafeteria][d05]
+- [Day 6 - Trash Compactor][d06]
 
 
 Day 1: Secret Entrance
@@ -151,9 +152,21 @@ We are now required to find all the fresh ingredients by ignoring the list of th
 This way we merge as many ranges together as possible and then simple arithmetic gives us the count. Runtime is `O(N)` because we iterate the ranges once.
 
 
+Day 6 - Trash Compactor
+-----------------------
+# Part 1
+We are asked to take the numbers in each column and then apply the operation at the bottom. I parsed the input into numbers and operations, and then started iterating column by column, collecting all the numbers and performing the op. Runtime is `O(NM)`.
+
+# Part 2
+Similar challenge but now each column contains 1 or more numbers that are aligned also in a column. The input is already stacking up all the numbers so there is no need for padding or anything like that. Also to preserve this alignment we shouldn't be performing any splits on whitespace.
+
+We use a two pointer approach to traverse the rows and columns, collecting each number. Everytime we collect a column that all its numbers are whitespace we know that is the start of a new operation, so we also advance a pointer to our ops list. Runtime is still `O(NM)` because we traverse the entire grid once.
+
+
 [top]: #advent-of-code-2025-solutions
 [d01]: #day-1-secret-entrance
 [d02]: #day-2-gift-shop
 [d03]: #day-3-lobby
 [d04]: #day-4-printing-department
 [d05]: #day-5-cafeteria
+[d06]: #day-5-trash-compactor
