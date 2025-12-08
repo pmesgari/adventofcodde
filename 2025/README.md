@@ -8,6 +8,8 @@ Table of Contents
 - [Day 4 - Printing Department][d04]
 - [Day 5 - Cafeteria][d05]
 - [Day 6 - Trash Compactor][d06]
+- [Day 7 - Laboratories][d07]
+- [Day 8 - Playground][d08]
 
 
 Day 1: Secret Entrance
@@ -162,6 +164,23 @@ Similar challenge but now each column contains 1 or more numbers that are aligne
 
 We use a two pointer approach to traverse the rows and columns, collecting each number. Everytime we collect a column that all its numbers are whitespace we know that is the start of a new operation, so we also advance a pointer to our ops list. Runtime is still `O(NM)` because we traverse the entire grid once.
 
+Day 7 - Laboratories
+--------------------
+# Part 1
+We are asked to determine how many times a split has occured. We process the input row by row and we only care about the beams in each column. We use a set of `current_beams` starting with the `S` column, then we process the next row, if that column corresponds to a `.` nothing happens the beam continue to travel on the same column. But, if the next row is a splitter the beam will split in two `(col - 1), (col + 1)`. Then these will be the active beams to process for the next row. Runtime is `O(NM)` if there is a splitter in each column.
+
+# Part 2
+Now each split corresponds to a new timeline and we need to find all the timelines. Now when we process the splitters in each row we have to accumulate all the beams arriving at the splitter. As we reach the last row, the sum of all the beam counts are the total timelines.
+
+
+Day 8 - Playground
+-------------------
+# Part 1
+We are asked to merge junction boxes to form circuits and then find the top largest circuits. This reminded me immediately of union find algorithm. To begin with I formed all the point pairs with their associated distance. Then I sliced the first 1000 pairs and passed it into the union find. The ouptput is a list of ids which I passed into a counter to calculate their sizes. Runtime is `O(N^3)`, with `N` points we have `O(N^2)` pairs, and for each pair we might need to change `N` ids, giving `O(N^3)`.
+
+# Part 2
+Its a slight modification of part 1, we now need to find the last pair that connects everything together. I keep running the union find algorithm until all the returned ids are the same which means everything is now connected. The same runtime as part 1, because we considered all pairs and all points when instead of a slice.
+
 
 [top]: #advent-of-code-2025-solutions
 [d01]: #day-1-secret-entrance
@@ -169,4 +188,6 @@ We use a two pointer approach to traverse the rows and columns, collecting each 
 [d03]: #day-3-lobby
 [d04]: #day-4-printing-department
 [d05]: #day-5-cafeteria
-[d06]: #day-5-trash-compactor
+[d06]: #day-6-trash-compactor
+[d07]: #day-7-laboratories
+[d08]: #day-8-playground
