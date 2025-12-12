@@ -10,6 +10,7 @@ Table of Contents
 - [Day 6 - Trash Compactor][d06]
 - [Day 7 - Laboratories][d07]
 - [Day 8 - Playground][d08]
+- [Day 9 - Movie Theater][d09]
 
 
 Day 1: Secret Entrance
@@ -182,6 +183,72 @@ We are asked to merge junction boxes to form circuits and then find the top larg
 Its a slight modification of part 1, we now need to find the last pair that connects everything together. I keep running the union find algorithm until all the returned ids are the same which means everything is now connected. The same runtime as part 1, because we considered all pairs and all points when instead of a slice.
 
 
+Day 9 - Movie Theater
+---------------------
+# Part 1
+We need to find the rectangle with the largest area. Simply check all pairs of red tiles, calculate the associated area, sort from high to low and pick the first item.
+Runtime is `O(N^2)`.
+
+# Part 2
+Some rectangles are invalid because they contain neither red nor green tiles. I first approached the problem using a dynamic programming solution. The main idea was:
+
+- Find the boundary
+- Create a grid
+- Create a table of prefix sums in 2D where each entry of the table contains the total number of tiles that are not green or red for a rectangle with one corner at `(0, 0)` and another corner at `(x, y)`.
+- Find all the pairs, and for each rectangle check the sum `top slice - left slice + top left corner == 0`, this means the rectangle is free from outside tiles.
+
+Problem was runtime, to make the grid and the DP table I would need to iterate from `xmin -> xmax` and `ymin -> ymax`, with these inputs, we would need a grid of around `100000 x 100000` which is around `10 billion` cells and that will require lots of RAM.
+
+I ditched the DP approach and focused on a geometrical solution.
+For every possible pair of red tiles if the following rules are satisfied, it means that rectangle is valid, I can calculate its area and compare it to the max area I have so far.
+
+## Rule 1: Does the rectangle crosses any boundary segments?
+If the rectangle crosses any of the boundary segments in the form of a `+` (cross intersection) then we know this rectangle is invalid.
+
+## Rule 2: Is the rectangle trapped inside the walls of the boundary?
+It can happen that we have a hollow shape and the rectangle is trapped inside, in which case rule 1 does not fail but the rectangle is clearly invalid.
+
+```
+    ---------------
+    |  ---------  |
+    |  |       |  |
+    |  |       |  |
+    |  ---------  |
+    ---------------
+```
+
+## Rule 3: Is there any boundary segments inside the rectangle?
+Any internal boundary segments means the rectangle will be split from the inside. We know if there is a boundary there will be an inside and an outside, which means there will be invalid tiles inside the rectangle.
+
+It took me several iterations to get all these rules implemented correctly. A few points I found helpful to make all these work:
+
+1) Ensure segments and points are normalized. This means sorted so that segments always go from left to right, and bottom to top.
+2) To determine a point is inside, the trick of adding `0.5` to its coordinate helps a lot because it removes considering corner cases since the line extending from the mid point will never overlap with the grid lines.
+3) When dealing with segments and points, it is very easy to say relative orientations on the paper, what becomes tricky is how to label the endpoints to make all the comparisons work. For that using min and max helps a lot since it removes the burden of what is point 1, 2, etc.
+4) Since each red tile connects to a green tile, the input forms a polygon. In a polygon the number of vertices equals the number of segments, so our runtime will be dependent on the number of segments `N`. We can also see this in the loop that builds the segments:
+
+```python
+for i in range(len(red_tiles) - 1): # Runs N - 1 times
+    segments.append(make_seg(red_tiles[i], red_tiles[i + 1]))
+
+segments.append(make_seg(red_tiles[0], red_tiles[-1])) # Runs 1 time to wrap
+```
+
+
+The total runtime is:
+```
+O(N^2) for all the pairs, and then for each pair
+    4 x O(N) for rule 1, check 4 segments against all N boundary segments
+    1 x O(N) for rule 2, check one center point against all N boundary segments
+    1 x O(N) for rule 3, check the midpoint of all N boundary segments against rectangle bounds
+    
+    # All the rules run sequentially
+
+=  O(N^3)
+```
+
+
+
 [top]: #advent-of-code-2025-solutions
 [d01]: #day-1-secret-entrance
 [d02]: #day-2-gift-shop
@@ -191,3 +258,4 @@ Its a slight modification of part 1, we now need to find the last pair that conn
 [d06]: #day-6-trash-compactor
 [d07]: #day-7-laboratories
 [d08]: #day-8-playground
+[d09]: #day-8-movie-theater
