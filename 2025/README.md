@@ -11,6 +11,9 @@ Table of Contents
 - [Day 7 - Laboratories][d07]
 - [Day 8 - Playground][d08]
 - [Day 9 - Movie Theater][d09]
+- [Day 10 - Factory][d10]
+- [Day 11 - Reactor][d11]
+- [Day 12 - Christmas Tree Farm][d12]
 
 
 Day 1: Secret Entrance
@@ -72,10 +75,10 @@ With these optimizations runtime was 0.20 seconds.
 
 Day 3: Lobby
 ----------------------
-# Part 1
+### Part 1
 We are asked to find the largest pair of indices in order. Iterating down from 9 to 1 for the first position I then searched for the largest value for the second position. Runtime is `O(N^2)`.
 
-# Part 2
+### Part 2
 Now we need to find 12 batteries, and my approach from part 1 was doomed. It would require `O(N^12)` with 12 nested loops.
 
 Instead, I restricted the range I could pick each digit and looked for the maximum value in that range. For example:
@@ -132,10 +135,10 @@ end = len(line) - remaining
 
 Day 4: Printing Department
 --------------------------
-# Part 1
+### Part 1
 We are asked to find all the rolls we can remove. A roll can be removed if there are less than four rolls in its neighborhood. Iterate the grid, for every roll position check all adjacent neighbors, if count is less than 4 include it for removal. Runtime is `O(NM)`.
 
-# Part 2
+### Part 2
 We now need to remove as many rolls as possible. My first implementation used the solution from part 1 and executed it in a while loop until there was nothing to remove anymore. It worked but was a bit slow because runtime was `O(NMK)`.
 
 Instead of visiting every cell with every iteration I did one initial count of all the rolls then I picked a spot and decremented all its roll neighbors in the count by 1. If any neighbor ended up with a count less than 4 I added it to the queue. This means I only have items in the queue that are going to be removed and while I process these items I update all their neighbors. This has better performance because runtime is `O(NM)`, as I need to process each position at most once.
@@ -143,10 +146,10 @@ Instead of visiting every cell with every iteration I did one initial count of a
 
 Day 5: Cafeteria
 ----------------
-# Part 1
+### Part 1
 We are asked to find fresh ingredients by comparing their ids to the ranges. I iterated the ids and checked if it falls within any region. Runtime is `O(N)` because the checks are all arithmetic operations and I iterate the list of IDs once.
 
-# Part 2
+### Part 2
 We are now required to find all the fresh ingredients by ignoring the list of the ids and just use the ranges. We can do this by first sorting the ranges using their start point. This aligns all the ranges from their left side. We then pick the first range and call it our current range, there are two cases:
 
 1) The current range will overlap with the next range in which case we can merge these two
@@ -157,39 +160,39 @@ This way we merge as many ranges together as possible and then simple arithmetic
 
 Day 6 - Trash Compactor
 -----------------------
-# Part 1
+### Part 1
 We are asked to take the numbers in each column and then apply the operation at the bottom. I parsed the input into numbers and operations, and then started iterating column by column, collecting all the numbers and performing the op. Runtime is `O(NM)`.
 
-# Part 2
+### Part 2
 Similar challenge but now each column contains 1 or more numbers that are aligned also in a column. The input is already stacking up all the numbers so there is no need for padding or anything like that. Also to preserve this alignment we shouldn't be performing any splits on whitespace.
 
 We use a two pointer approach to traverse the rows and columns, collecting each number. Everytime we collect a column that all its numbers are whitespace we know that is the start of a new operation, so we also advance a pointer to our ops list. Runtime is still `O(NM)` because we traverse the entire grid once.
 
 Day 7 - Laboratories
 --------------------
-# Part 1
+### Part 1
 We are asked to determine how many times a split has occured. We process the input row by row and we only care about the beams in each column. We use a set of `current_beams` starting with the `S` column, then we process the next row, if that column corresponds to a `.` nothing happens the beam continue to travel on the same column. But, if the next row is a splitter the beam will split in two `(col - 1), (col + 1)`. Then these will be the active beams to process for the next row. Runtime is `O(NM)` if there is a splitter in each column.
 
-# Part 2
+### Part 2
 Now each split corresponds to a new timeline and we need to find all the timelines. Now when we process the splitters in each row we have to accumulate all the beams arriving at the splitter. As we reach the last row, the sum of all the beam counts are the total timelines.
 
 
 Day 8 - Playground
 -------------------
-# Part 1
+### Part 1
 We are asked to merge junction boxes to form circuits and then find the top largest circuits. This reminded me immediately of union find algorithm. To begin with I formed all the point pairs with their associated distance. Then I sliced the first 1000 pairs and passed it into the union find. The ouptput is a list of ids which I passed into a counter to calculate their sizes. Runtime is `O(N^3)`, with `N` points we have `O(N^2)` pairs, and for each pair we might need to change `N` ids, giving `O(N^3)`.
 
-# Part 2
+### Part 2
 Its a slight modification of part 1, we now need to find the last pair that connects everything together. I keep running the union find algorithm until all the returned ids are the same which means everything is now connected. The same runtime as part 1, because we considered all pairs and all points when instead of a slice.
 
 
 Day 9 - Movie Theater
 ---------------------
-# Part 1
+### Part 1
 We need to find the rectangle with the largest area. Simply check all pairs of red tiles, calculate the associated area, sort from high to low and pick the first item.
 Runtime is `O(N^2)`.
 
-# Part 2
+### Part 2
 Some rectangles are invalid because they contain neither red nor green tiles. I first approached the problem using a dynamic programming solution. The main idea was:
 
 - Find the boundary
@@ -202,10 +205,10 @@ Problem was runtime, to make the grid and the DP table I would need to iterate f
 I ditched the DP approach and focused on a geometrical solution.
 For every possible pair of red tiles if the following rules are satisfied, it means that rectangle is valid, I can calculate its area and compare it to the max area I have so far.
 
-## Rule 1: Does the rectangle crosses any boundary segments?
+#### Rule 1: Does the rectangle crosses any boundary segments?
 If the rectangle crosses any of the boundary segments in the form of a `+` (cross intersection) then we know this rectangle is invalid.
 
-## Rule 2: Is the rectangle trapped inside the walls of the boundary?
+#### Rule 2: Is the rectangle trapped inside the walls of the boundary?
 It can happen that we have a hollow shape and the rectangle is trapped inside, in which case rule 1 does not fail but the rectangle is clearly invalid.
 
 ```
@@ -217,7 +220,7 @@ It can happen that we have a hollow shape and the rectangle is trapped inside, i
     ---------------
 ```
 
-## Rule 3: Is there any boundary segments inside the rectangle?
+#### Rule 3: Is there any boundary segments inside the rectangle?
 Any internal boundary segments means the rectangle will be split from the inside. We know if there is a boundary there will be an inside and an outside, which means there will be invalid tiles inside the rectangle.
 
 It took me several iterations to get all these rules implemented correctly. A few points I found helpful to make all these work:
@@ -248,6 +251,96 @@ O(N^2) for all the pairs, and then for each pair
 ```
 
 
+Day 10 - Factory
+----------------
+### Part 1
+We are required to find the minimum button presses to reach the target state.
+This is an integer linear programming exercise and one of the standard solutions is to use the Gaussian Elimination method. The problem can be represented as a set of equations in matrix form. Through an algebraic procedure this matrix gets transformed into a new shape called Echelon form which defines the free variables and the dependent variables. We can then chose the free variables, plug them in and find the dependent variables.
+
+In part 1, we only care about toggling the lights on/off so the entire system can be represeted in base 2. This means our target state can be represented as a series of 1s and 0s. Also we know the system is initially off, so the even or odd sequence of presses will look like this:
+
+```
+OFF -> ON -> OFF -> ON -> OFF -> ON
+```
+
+Pressing a button an even number of times means we will be in OFF state and an odd number of times means we will be in ON state.
+
+This adds a constraint to our system of equations. We also look for a solution where each variable has a positive value, another constraint.
+
+I used the `z3-solver` package and parsed the input then addede the constraints and left the solution to `z3`. I did attempt implementing a simple Gauusian elimination method, but after several attempts I accepted it was out of my expertise.
+
+### Part 2
+Similar to part 1 with the difference we now care about reaching the exact joltage requirements for our buttons. Joltage defines our new targets for the system of equations we have.
+
+The only difference is that now the targets are different and our constraint is no longer button presses but the same of the presses must equal the joltage requirements.
+
+
+Day 11 - Reactor
+----------------
+### Part 1
+
+A typical graph problem. We need to count the total number of paths from a source to a destination vertex. I parse the input into a simple dict and then used a recursive function to count the number of paths from a given node. Runtime is `O(2^V)` which is horrifying but luckily the input is small enough that it returns instantly.
+
+
+### Part 2
+
+We now need to follow a path that includes two mandatory nodes. We can simply do this in independent steps. There are in total two scenarios:
+
+```
+1) svr -> dac -> fft -> out
+2) svr -> fft -> dac -> out
+```
+
+We can use the same recursive function and find the count for each segment and each scenario. Here the `cache` decorator was needed otherwise runtime was too high. Total runtime is `O(V + E)` because of the caching.
+
+
+Day 12 - Christmas Tree Farm
+----------------------------
+**DISCLAIMER:** I don't take credits for the solutions of Day 12. I have no previous experience with bitmasking algorithm techniques and so I used this problem with Gemini as a teacher to help me reach the full solution.
+
+### Part 1 & 2
+We have multiple shapes and are given a region to determine if the shapes can fit together. Bitmasking is the technique used to solve this. I learned about this approach for the first time and it was fascinating.
+
+Shapes and the region are both represented as numbers, and placing, removing and checking whether a shape fits into the region are all done via binary operations. Since CPUs can do these operations in one cycle the algorithm is quite fast.
+
+I learned about these 5 fundamental operations.
+
+1. The Left Shift (<<)
+Intuition: Movement & Positioning Imagine holding a stamp over a piece of paper. Initially, the stamp is at the very start (index 0). Shifting moves the stamp to the specific spot on the board where you want to try placing it.
+
+In the code: shifted_piece = piece_mask << idx
+
+What it does: It takes the pattern of the piece (defined at the origin) and slides it idx steps forward into the correct position on the linear board.
+
+2. Bitwise AND (&)
+Intuition: Collision Detection Imagine stacking two overhead projector transparencies. If you hold them up to the light, you only see dark spots where both sheets have ink. If the result is completely clear (equals 0), there is no overlap.
+
+In the code: if (grid.mask & shifted_piece) != 0:
+
+What it does: It compares the current board state with the new piece. If any bit is 1 in both numbers, it means two blocks are trying to occupy the same cell—a collision.
+
+3. Bitwise OR (|)
+Intuition: Placement (Stamping) This is the act of actually pressing the stamp down. You are merging the new piece into the existing board. "If there is ink on the board OR ink on the stamp, the result is ink."
+
+In the code: grid.mask |= shifted_piece
+
+What it does: It sets the bits of the grid to 1 wherever the piece has 1s, leaving the existing filled spots unchanged.
+
+4. Bitwise XOR (^)
+Intuition: Removal (The "Undo" Button) This is crucial for backtracking. XOR works like a toggle: "If I apply the exact same mask twice, it reverts to the original state." Since we know the piece was just placed (so the bits are definitely 1), XORing it flips them back to 0.
+
+In the code: grid.mask ^= shifted_piece
+
+What it does: It cleanly lifts the piece off the board, restoring the 0s (empty space) exactly as they were before you placed it, allowing you to try the next shape.
+
+5. Population Count (Bit Count)
+Intuition: Weighing the Piece To optimize the search (Part 2 of your optimization), you needed to know the "area" of islands or pieces. This operation simply counts how many 1s are in the integer.
+
+In the code: mask.bit_count() or bin(mask).count('1')
+
+What it does: It instantly tells you the size of a piece or a hole. This enabled the "Connectivity Pruning"—if a hole has 3 bits (area 3) but your smallest piece has 4 bits, you know immediately that the hole can never be filled.
+
+
 
 [top]: #advent-of-code-2025-solutions
 [d01]: #day-1-secret-entrance
@@ -258,4 +351,7 @@ O(N^2) for all the pairs, and then for each pair
 [d06]: #day-6-trash-compactor
 [d07]: #day-7-laboratories
 [d08]: #day-8-playground
-[d09]: #day-8-movie-theater
+[d09]: #day-9-movie-theater
+[d10]: #day-10-factory
+[d11]: #day-11-reactor
+[d12]: #day-12-christmas-tree-farm
